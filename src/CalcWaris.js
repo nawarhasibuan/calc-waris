@@ -5,7 +5,7 @@ import { readFile } from 'fs/promises';
 
 const json = JSON.parse(
     await readFile(
-      new URL('./relList.json', import.meta.url)
+      new URL('../utils/relList.json', import.meta.url)
     )
   );
 /**

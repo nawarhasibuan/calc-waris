@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises';
 
 const json = JSON.parse(
     await readFile(
-      new URL('./relations.json', import.meta.url)
+      new URL('../utils/relations.json', import.meta.url)
     )
   );
 /**
