@@ -1,3 +1,10 @@
+import { readFile } from 'fs/promises';
+
+const json = JSON.parse(
+    await readFile(
+      new URL('./relations.json', import.meta.url)
+    )
+  );
 /**
  * Class to create Waris (an heir) instance
  * @author Panawar Hasibuan
@@ -9,27 +16,7 @@ class Waris{
      * @static
      * @property {Array<Array<string>>} relations - family relations list that can inherite an inheritor
      */
-    static #relations = [
-        {
-            lang : 'en',
-            relations : [
-                ['child', 'grand-child', 'great-grand-child'],
-                ['parent', 'grand-parent', 'great-grand-parent'],
-                ['sibling', 'sibling-father', 'sibling-mother', 'nephew', 'nephew-father'],
-                ['uncle', 'uncle-father', 'cousin'],
-                ['liberator', 'none']
-            ]
-        },{
-            lang : 'id',
-            relations : [
-                ['Anak', 'Cucu', 'Cicit'],
-                ['Orang Tua', 'Kakek-Nenek', 'Buyut'],
-                ['Saudara Kandung', 'Saudara Seayah', 'Saudara Seibu', 'Keponakan', 'Keponakan Seayah'],
-                ['Paman Kandung', 'Paman Seayah', 'Sepupu'],
-                ['Memerdekakan', 'Tidak Ada']
-            ]
-        }
-    ]
+    static #relations = json.data
     /**
      * Constructor of Waris, an heir
      * @param {bool} gender gender of heir, true for male
@@ -38,7 +25,7 @@ class Waris{
      * @param {bool} isPartner is inheritor partner
      * @param {string} name - name of heir
      */
-    constructor(gender, relation, lang = 'id', isPartner = false, name = 'fulan'){        
+    constructor(gender, relation, lang = 'id', isPartner = false, name = 'Fulan'){        
         /**
          * @property {string} lang language of relation
          */
