@@ -1,0 +1,33 @@
+{
+  "name": "calc-waris",
+  "version": "1.0.0",
+  "description": "Calculate inheritance in Islam",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nawarhasibuan/calc-waris"
+  },
+  "keywords": [
+    "faraidh",
+    "warits",
+    "inheritance",
+    "waris",
+    "node"
+  ],
+  "author": "Panawar Hasibuan",
+  "bugs": {
+    "url": "https://github.com/nawarhasibuan/calc-waris/issues"
+  },
+  "homepage": "https://lombang.com",
+  "license": "ISC",
+  "dependencies": {
+    "fraction.js": "^4.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

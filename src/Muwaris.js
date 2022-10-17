@@ -13,7 +13,7 @@ class Muwaris {
      */
     constructor(gender, name = 'fulan', maurus = 100){
         this.name = name
-        this.gender = gender
+        this.gender = !!gender
         this.maurus = maurus
     }
 }

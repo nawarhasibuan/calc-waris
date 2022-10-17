@@ -1,6 +1,13 @@
 import Waris from "./Waris.js"
 import Muwaris from './Muwaris.js'
 import Fraction from "fraction.js"
+import { readFile } from 'fs/promises';
+
+const json = JSON.parse(
+    await readFile(
+      new URL('./relList.json', import.meta.url)
+    )
+  );
 /**
  * 
  * This class offer a capability to calculate division of inheritance based on Islam.
@@ -239,20 +246,34 @@ class CalcWaris {
      * @returns {{result: Array<{siham: Fraction, waris: Waris}>, inisialBaseProb: number, finalBaseProb: number}} list of heirs portion
      */
     evaluate(){
-        const inisialBaseProb = this.getBaseProb()
-        const finalBaseProb = this.getFinalBaseProb()
-        let result = []
-        let x = this.caclcSaham()
-        x.forEach((val, idx) => {
-            result[idx] = {siham: val, waris : this.warisatan[idx]}
+        const baseProb = this.getBaseProb()
+        const tashih = this.getTashih()
+        let result = []        
+        let sum = new Fraction(0)
+        // count the decrease of base prob
+        this.warisatan.forEach((waris, idx) => {
+            sum = sum.add(this.getFurud(idx).div(this.getFriends(idx)))
+        });
+        const aulRadd = this.isNoAshabah() || sum.compare(1) > 0 ? sum.mul(this.getBaseProb()).valueOf() : 0
+        let data = this.caclcSaham()
+        const relList = json.relList
+        data.forEach((val, idx) => {
+            let i = this.warisatan[idx].isPartner || this.warisatan[idx].power > 3 ? 7 : this.warisatan[idx].gender ? this.warisatan[idx].power : this.warisatan[idx].power + 4
+            let j = this.warisatan[idx].isPartner ? 2 : this.warisatan[idx].darajah
+            let rel = relList[i][j]
+            // let rel = `${this.warisatan[idx].relation} ${this.warisatan[idx].gender} ${this.warisatan[idx].isPartner}`
+            const id = result.findIndex(r => !r.relation.localeCompare(rel))
+            if (id >= 0) {
+                result[id].waris.push(this.warisatan[idx])
+            } else {
+                result[result.length] = {relation: rel ,furud: this.getFurud(idx), siham: val, waris : [this.warisatan[idx]]}
+            }
         })
-        return { result, inisialBaseProb, finalBaseProb }
+        return { result, baseProb, tashih, aulRadd }
     }
     /**
-     * TODO: special case grand father and siblings
-     * 
      * Calculate the portion of each heir in warisatan
-     * @returns {Array<number>} saham (portion) of each heir
+     * @returns {Array<Fraction>} saham (portion) of each heir
      */
     caclcSaham(){
         let saham = [];
@@ -378,7 +399,7 @@ class CalcWaris {
      * Calculate base problem after aul or ... and all heirs got portion in integer
      * @returns {number} final base problem
      */
-    getFinalBaseProb(){
+    getTashih(){
         //stonks cause of aul or radd
         let x = new Fraction(1);
         const saham = this.caclcSaham()
@@ -462,7 +483,7 @@ class CalcWaris {
                     case 20: //sister
                         if (this.isKalalah()) {
                             x = this.isLonly(idx) ? x.add(1/2) : x.add(2/3)
-                        }                        
+                        }
                         break;
                     case 21: //sister in father
                         if (this.isKalalah()) {
@@ -530,7 +551,7 @@ class CalcWaris {
      */
     isAshabah(idx) {
         const waris = this.warisatan[idx]
-        const bilGhairi = waris.power < 0 && (this.getMan(waris.power, waris.darajah) > 0 || (waris.power === 0 && waris.darajah > 0 && !this.isNoBoy()))
+        const bilGhairi = waris.power < 4 && (this.getMan(waris.power, waris.darajah) > 0 || (waris.power === 0 && waris.darajah > 0 && !this.isNoBoy()))
         const maalGhairi = this.isNoBoy() && !this.isKalalah() && waris.power === 2 && waris.darajah < 2
         if (waris.power === 1) {
             return !this.isMahjub(idx) && waris.gender && this.isNoBoy()
@@ -689,14 +710,20 @@ class CalcWaris {
         if (waris.isPartner) {
             return this.numPartner
         } else if (waris.power > 3) {
-            return this.numLiberator
-        } else {            
+            return waris.darajah === 0 ? this.numLiberator : 1
+        } else {
+            if (waris.power === 2){
+                if (waris.darajah === 2) {
+                    return this.getWoman(2,2)
+                } else if (waris.darajah > 2){
+                    let x = waris.gender ? waris.darajah-1 : waris.darajah
+                    return waris.gender ? this.getMan(waris.power, x) : this.getWoman(waris.power, x)
+                }
+            }
             return waris.gender ? this.getMan(waris.power, waris.darajah) : this.getWoman(waris.power, waris.darajah)
         }
     }
     /**
-     * TODO: grand child sibling, the one who make them ashabah and who they made ashabah
-     * 
      * Count heir sibling, the heirs with same power and darajah. with opposite gender
      * @param {number} idx heir's idx in warisatan
      * @returns number of heirs sibling
@@ -708,19 +735,23 @@ class CalcWaris {
         } else if (waris.power === 4 && waris.darajah === 0){
             return this.numLiberator - 1
         } else if (waris.power < 3 && waris.darajah < 3){
-            // if (waris.power === 0 && waris.darajah > 0) {
-            //     let c = 0
-            //     if (waris.gender) {
-            //         for (let idx = waris.darajah; idx > 0; idx--) {
-            //             c += this.#women[0][idx];
-            //         }
-            //     } else {
-            //         for (let idx = waris.darajah; idx < this.#women[0].length; idx++) {
-            //             c += this.#men[0][idx];
-            //         }            
-            //     }
-            //     return c
-            // }
+            if (waris.power === 0 && waris.darajah > 0) {
+                let c = 0
+                if (waris.gender) {
+                    if (this.getWoman(0,0) === 0) {
+                        const id = this.#women[0].findIndex(child => child > 0)
+                        if (id > -1) {
+                            c = this.getWoman(0,id)
+                        }
+                    }
+                } else if (!this.isMahjub(idx)) {
+                    const id = this.#men[0].findIndex(child => child > 0)
+                    if (id > -1) {                        
+                        c = this.getMan(0,id)
+                    }
+                }
+                return c
+            }
             return waris.gender ?  this.getWoman(waris.power, waris.darajah) : this.getMan(waris.power, waris.darajah)
         } else {
             return 0
@@ -737,7 +768,7 @@ class CalcWaris {
             found = !this.#men[i].every(waris => waris === 0)
             i++
         } while (!found && i < this.#men.length);
-        return !found
+        return !found && (this.isKalalah() || (this.getWoman(2,0) + this.getWoman(2,1)) === 0)
     }
     /**
      * Clear the calculator. Set calculator to inisial state
