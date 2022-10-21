@@ -17,4 +17,5 @@ class Muwaris {
         this.maurus = maurus
     }
 }
-export default Muwaris;
+
+export default Muwaris

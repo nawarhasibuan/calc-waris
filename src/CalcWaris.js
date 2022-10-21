@@ -1,13 +1,7 @@
 import Waris from "./Waris.js"
 import Muwaris from './Muwaris.js'
 import Fraction from "fraction.js"
-import { readFile } from 'fs/promises';
-
-const json = JSON.parse(
-    await readFile(
-      new URL('../utils/relList.json', import.meta.url)
-    )
-  );
+import relationList from "../utils/relationList.js"
 /**
  * 
  * This class offer a capability to calculate division of inheritance based on Islam.
@@ -256,7 +250,7 @@ class CalcWaris {
         });
         const aulRadd = this.isNoAshabah() || sum.compare(1) > 0 ? sum.mul(this.getBaseProb()).valueOf() : 0
         let data = this.caclcSaham()
-        const relList = json.relList
+        const relList = relationList()[0].relList
         data.forEach((val, idx) => {
             let i = this.warisatan[idx].isPartner || this.warisatan[idx].power > 3 ? 7 : this.warisatan[idx].gender ? this.warisatan[idx].power : this.warisatan[idx].power + 4
             let j = this.warisatan[idx].isPartner ? 2 : this.warisatan[idx].darajah
@@ -779,4 +773,5 @@ class CalcWaris {
         }
     }
 }
-export default CalcWaris;
+
+export default CalcWaris

@@ -1,10 +1,5 @@
-import { readFile } from 'fs/promises';
+import relations from "../utils/relations.js";
 
-const json = JSON.parse(
-    await readFile(
-      new URL('../utils/relations.json', import.meta.url)
-    )
-  );
 /**
  * Class to create Waris (an heir) instance
  * @author Panawar Hasibuan
@@ -16,7 +11,7 @@ class Waris{
      * @static
      * @property {Array<Array<string>>} relations - family relations list that can inherite an inheritor
      */
-    static #relations = json.data
+    static #relations = relations().data
     /**
      * Constructor of Waris, an heir
      * @param {bool} gender gender of heir, true for male

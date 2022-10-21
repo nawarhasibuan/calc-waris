@@ -1,4 +1,4 @@
-{"data": [
+export default function() { return ({"data": [
         {
             "lang": "en",
             "relations": [
@@ -62,4 +62,4 @@
             ]
         }
     ]
-}
+})}
