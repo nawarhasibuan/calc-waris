@@ -46,6 +46,52 @@ export default function() {
                     "partner"
                 ]
             ]
+        },{
+            "lang" : "id",
+            "relList" : [
+                [
+                    "anak laki-laki",
+                    "cucu laki-laki",
+                    "cicit laki-laki"
+                ],
+                [
+                    "ayah",
+                    "kakek",
+                    "kakek buyut"
+                ],
+                [
+                    "saudara",
+                    "saudara seayah",
+                    "saudara seibu",
+                    "keponakan",
+                    "keponakan seayah"
+                ],
+                [
+                    "paman",
+                    "paman seayah",
+                    "sepupu"
+                ],
+                [
+                    "anak perempuan",
+                    "cucu perempuan",
+                    "cicit perempuan",
+                ],
+                [
+                    "ibu",
+                    "nenek",
+                    "nenek buyut"
+                ],
+                [
+                    "saudari",
+                    "saudari seayah",
+                    "saudara seibu"
+                ],
+                [
+                    "memerdekakan",
+                    "tidak ada",
+                    "pasangan"
+                ]
+            ]
         }]
     )
 }

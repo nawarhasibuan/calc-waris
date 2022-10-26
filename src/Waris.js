@@ -16,11 +16,9 @@ class Waris{
      * Constructor of Waris, an heir
      * @param {bool} gender gender of heir, true for male
      * @param {string} relation family relation
-     * @param {string} lang language of relation
-     * @param {bool} isPartner is inheritor partner
-     * @param {string} name - name of heir
+     * @param {{lang: string, isPartner: bool, name: string}} options  optinal params
      */
-    constructor(gender, relation, lang = 'id', isPartner = false, name = 'Fulan'){        
+    constructor(gender, relation, {lang = 'id', isPartner = false, name = 'Fulan'} = {}){        
         /**
          * @property {string} lang language of relation
          */

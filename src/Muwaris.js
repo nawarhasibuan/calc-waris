@@ -8,10 +8,9 @@ class Muwaris {
     /**
      * Constructor of Muwaris, an insheritor
      * @param {bool} gender gender of muwaris, true for male
-     * @param {string} [name] name of muwaris
-     * @param {number} [maurus] number of inheritance
+     * @param {{name: string, maurus: number}} options optional params
      */
-    constructor(gender, name = 'fulan', maurus = 100){
+    constructor(gender, {name = 'fulan', maurus = 100}={}){
         this.name = name
         this.gender = !!gender
         this.maurus = maurus

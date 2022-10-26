@@ -237,9 +237,10 @@ class CalcWaris {
     }
     /**
      * Evaluate portion of all heirs
+     * @param {string} lang language of relation
      * @returns {{result: Array<{siham: Fraction, waris: Waris}>, inisialBaseProb: number, finalBaseProb: number}} list of heirs portion
      */
-    evaluate(){
+    evaluate(lang = 'id'){
         const baseProb = this.getBaseProb()
         const tashih = this.getTashih()
         let result = []        
@@ -250,7 +251,7 @@ class CalcWaris {
         });
         const aulRadd = this.isNoAshabah() || sum.compare(1) > 0 ? sum.mul(this.getBaseProb()).valueOf() : 0
         let data = this.caclcSaham()
-        const relList = relationList()[0].relList
+        const relList = relationList()[relationList().findIndex(v=>v.lang === lang)].relList
         data.forEach((val, idx) => {
             let i = this.warisatan[idx].isPartner || this.warisatan[idx].power > 3 ? 7 : this.warisatan[idx].gender ? this.warisatan[idx].power : this.warisatan[idx].power + 4
             let j = this.warisatan[idx].isPartner ? 2 : this.warisatan[idx].darajah
